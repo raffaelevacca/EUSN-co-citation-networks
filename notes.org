@@ -1,0 +1,14 @@
+* Keywords
+Social network OR social networks OR Network science
+* Web of Science categories
+* Search
++ TOPIC: ("social network" OR "social networks" OR "network science")
+Timespan: 2011-2013. Indexes: SCI-EXPANDED, SSCI, A&HCI.
++ Differenc timespans
+* Timespans
+2011-2013
+08-10
+05-07
+02-04
+99-01
+96-98
