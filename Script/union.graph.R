@@ -1,11 +1,14 @@
+# Set working directory
 setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
 
+# Libraries
 library(igraph)
 library(scales)
 library(RColorBrewer)
 library(ggplot2)
 library(Hmisc)
 
+# Clear workspace
 rm(list=ls())
 
 # Load functions
@@ -22,8 +25,7 @@ load("./Data/graphs.13.rda")
 ####################################################################################################
 
 gr1 <- social.one
-gr2 <- computer.one
-gr3 <- physics.one
+gr2 <- comp_physics.one
 
 ## Check author name consistency
 ## -----------------------------------------------------------------------------------------------
@@ -41,7 +43,7 @@ exclude <- sapply(exclude, function(x) paste("^", x, "\\>", sep=""))
 exclude <- paste(exclude, collapse="|")
 
 # Create list of graph to be used for the loop
-l <- list("gr1"= gr1, "gr2"= gr2, "gr3"= gr3)
+l <- list("gr1"= gr1, "gr2"= gr2)
 
 for (i in 1:length(l)) {
   
@@ -64,26 +66,20 @@ for (i in 1:length(l)) {
 # Check that name spelling is consistent across social network and network science graphs.
 data1 <- data.frame(name= V(gr1)$name, gr1=1, stringsAsFactors=FALSE)
 data2 <- data.frame(name= V(gr2)$name, gr2=1, stringsAsFactors=FALSE)
-data3 <- data.frame(name= V(gr3)$name, gr3=1, stringsAsFactors=FALSE)
 ## Merge
 data <- merge(data1, data2, by="name", all=TRUE)
-data <- merge(data, data3, by="name", all=TRUE)
 ## Reorder
 data <- data[order(data$name),]
 
 # Replace 1 with TRUE and NA with FALSE
-for (i in 2:4) {
+for (i in 2:3) {
   data[[i]][is.na(data[[i]])] <- 0
   data[[i]] <- as.logical(data[[i]])
 }
 
 # # Tabulate
-# ## Overlap between social sciences and computer sciences
+# ## Authro overlap between social sciences and computer sciences + physics
 # table(data[,2:3])
-# ## Overlap between social sciences and physics
-# table(data[,c(2,4)])
-# ## Overlap between computer sciences and physics
-# table(data[,3:4])
 
 
 ## Get the union graphs with edge weights
@@ -96,29 +92,13 @@ for (i in 2:4) {
 # only keep the *most* co-cited in each network.
 gr1 <- delete.edges(gr1, E(gr1)[weight < quantile(E(gr1)$weight, prob= 0.9)])
 gr2 <- delete.edges(gr2, E(gr2)[weight < quantile(E(gr2)$weight, prob= 0.9)])
-gr3 <- delete.edges(gr3, E(gr3)[weight < quantile(E(gr3)$weight, prob= 0.9)])
 
-
-## Union between social and computer
-union.gr.12 <- union.graph(gr1, gr2, w.names= c("weight", "weight"), output.w.names= c("weight.social", "weight.computer"), vert.attr.names= c("vertex.social", "vertex.computer"))
-
-# Social+computer edge weight (number co-citations)
-E(union.gr.12)$weight.12 <- E(union.gr.12)$weight.social + E(union.gr.12)$weight.computer
-
-## Between social/computer and physics
-union.gr <- union.graph(union.gr.12, gr3, w.names= c("weight.12", "weight"), output.w.names= c("weight.12", "weight.physics"), vert.attr.names= c("vertex.12", "vertex.physics"))
+## Union graph
+union.gr <- union.graph(gr1, gr2, w.names= c("weight", "weight"), output.w.names= c("weight.1", "weight.2"), vert.attr.names= c("vertex.1", "vertex.2"))
 
 # Calculate total edge weight
-E(union.gr)$weight <- E(union.gr)$weight.12 + E(union.gr)$weight.physics
+E(union.gr)$weight <- E(union.gr)$weight.1 + E(union.gr)$weight.2
 
-# Clean the graph
-union.gr <- remove.vertex.attribute(union.gr, "vertex.12")
-union.gr <- remove.vertex.attribute(union.gr, "vertex.physics")
-union.gr <- remove.edge.attribute(union.gr, "weight.12")
-union.gr <- remove.edge.attribute(union.gr, "weight.physics")
-
-# Use data to create vertex attributes that tell which network(s) the vertex comes from
-union.gr <- vert.attr.multi(data, union.gr, dataID= "name", graphID= "name", attributes= c("gr1", "gr2", "gr3"), attr.names= c("v.social", "v.computer", "v.physics"))
 
 ####################################################################################################
 ### PLOTS                                                                             ###
@@ -161,7 +141,8 @@ v.col <- brewer.pal(9, "Blues")[2]
 labels <- sapply(V(gr)$name, function(x) paste(toupper(substr(x, 1, 1)), substring(x,2), sep=""))
 
 # Label size
-l.cex <- rescale(degree(gr), to= c(0.5, 1))
+l.cex <- 0.5
+  # rescale(degree(gr), to= c(0.5, 1))
 
 # Plot
 png.def("./Figures/union.names.png")
@@ -172,72 +153,74 @@ dev.off()
 # Plot with no names and different colors
 ## -------------------------------------------------------------------------------------------------
 
+# Rescale edge weigth to use it as width
+width <- rescale(E(gr)$weight, to= c(0.5, 8))
+
+# Vertex size
+v.size <- rescale(degree(gr), to= c(1.5, 6))
+
 # Social Sciences ONLY vertices
-v1 <- V(gr)[v.social==1 & v.computer==0 & v.physics==0]
-# Computer Science ONLY vertices
-v2 <- V(gr)[v.social==0 & v.computer==1 & v.physics==0]
-# Physics ONLY vertices
-v3 <- V(gr)[v.social==0 & v.computer==0 & v.physics==1]
+v1 <- V(gr)[vertex.1==1 & vertex.2==0]
+# Comp+Physics Science ONLY vertices
+v2 <- V(gr)[vertex.1==0 & vertex.2==1]
+# Overlapping vertices
+v3 <- V(gr)[vertex.1==1 & vertex.2==1]
 
-# Overlapping
-v12 <- V(gr)[v.social==1 & v.computer==1 & v.physics==0]
-v13 <- V(gr)[v.social==1 & v.computer==0 & v.physics==1]
-v23 <- V(gr)[v.social==0 & v.computer==1 & v.physics==1]
-v123 <- V(gr)[v.social==1 & v.computer==1 & v.physics==1]
+# RColorBrewer palettes
+pal.1 <- brewer.pal(9, "Blues")
+pal.2 <- brewer.pal(9, "Greys")
+pal.3 <- brewer.pal(9, "Reds")
 
-# All vertices who are overlapping between 2 or 3 disciplines
-# only <- c(v1, v2, v3)
-# v4 <- V(gr)[!(V(gr) %in% only)]
-
-# # Edge color
-# e.col <- hex.seq(width, palette= brewer.pal(9, "Blues")[5:9])
-# e.col <- alpha.col(e.col, 0.5)
+# Pre-assign color vectors
+v.col <- rep(NA, 3)
+v.f.col <- rep(NA, 3)
+e.col <- rep(NA, 3)
 
 # Vertex colors
-v.col1 <- brewer.pal(9, "Reds")[6]
-v.col2 <- brewer.pal(9, "Blues")[6]
-v.col3 <- brewer.pal(9, "Greens")[6]
-v.col12 <- brewer.pal(9, "Purples")[6]
-v.col13 <- "Yellow"
-v.col23 <- "Cyan"
-v.col23 <- "grey20"
+v.col[1] <- pal.1[7]
+v.col[2] <- pal.2[4]
+v.col[3] <- pal.3[7]
+# Vertex frame colors
+v.f.col[1] <- pal.1[9]
+v.f.col[2] <- pal.2[9]
+v.f.col[3] <- pal.3[9]
+# Edge colors
+e.col[1] <- pal.1[6] 
+e.col[2] <- pal.2[6]
+e.col[3] <- pal.3[6]
 
-# Vertex fram colors
-# Darker version
-v.f.col1 <- brewer.pal(9, "Blues")[9]
-v.f.col2 <- brewer.pal(9, "Greens")[9]
-v.f.col3 <- brewer.pal(9, "Greens")[9]
-v.f.col12 <- brewer.pal(9, "Purples")[9]
-v.f.col13 <- "Yellow"
-v.f.col23 <- "Blue"
-v.f.col23 <- "Black"
+# Apply transparency
+e.col <- alpha.col(e.col, 0.5)
+v.col <- alpha.col(v.col, 0.8)
+v.f.col <- alpha.col(v.f.col, 0.8)
 
 
-# # Transparent version
-# sn.col.t <- alpha.col(sn.col, 0.5) 
-# ns.col.t <- alpha.col(ns.col, 0.5)
-# b.col.t <- alpha.col(b.col, 0.5)
-# 
-# # Edges of different types with different colors
-# E(gr)[SN %--% SN]$color <- sn.col.t
-# E(gr)[SN %--% B]$color <- sn.col.t
-# E(gr)[SN %--% NS]$color <- b.col.t
-# E(gr)[B %--% B]$color <- b.col.t
-# E(gr)[NS %--% NS]$color <- ns.col.t
-# E(gr)[NS %--% B]$color <- ns.col.t
+# Edges of different types with different colors
+## Within Social Sciences
+E(gr)[v1 %--% v1]$color <- e.col[1]
+## Between Social Sciences and Overlap
+E(gr)[v1 %--% v3]$color <- e.col[3]
+## Within Comp+Physics
+E(gr)[v2 %--% v2]$color <- e.col[2]
+## Between Comp+Physics and Overlap
+E(gr)[v2 %--% v3]$color <- e.col[3]
+## Within Overlap
+E(gr)[v3 %--% v3]$color <- e.col[3]
+## Notice that by construction there are no edges between Social Sciences and Comp+Physics
+# E(gr)[v1 %--% v2]
 
-# Colors
-V(gr)[v1]$color <- v.col1
-V(gr)[v1]$frame.color <- v.f.col1
-V(gr)[v2]$color <- v.col2
-V(gr)[v2]$frame.color <- v.f.col2
-V(gr)[v3]$color <- v.col3
-V(gr)[v3]$frame.color <- v.f.col3
-V(gr)[v4]$color <- v.col4
-V(gr)[v4]$frame.color <- v.f.col4
+# Color for Social sciences
+V(gr)[v1]$color <- v.col[1]
+V(gr)[v1]$frame.color <- v.f.col[1]
+# Color for Comp+physics
+V(gr)[v2]$color <- v.col[2]
+V(gr)[v2]$frame.color <- v.f.col[2]
+# Color for Overlap
+V(gr)[v3]$color <- v.col[3]
+V(gr)[v3]$frame.color <- v.f.col[3]
 
 
 # Plot
 png.def("./Figures/temp.png")
-plot.gr(gr, layout= layout, vertex.size=v.size, edge.width= width, vert.col= V(gr)$color, vert.frame.col= V(gr)$frame.color)
+plot.gr(gr, layout= layout, vertex.size=v.size, vert.col= V(gr)$color, vert.frame.col= V(gr)$frame.color, edge.width= width, edge.color= E(gr)$color)
 dev.off()

@@ -1,14 +1,22 @@
-setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
+# This script uses the original .txt data as downloaded from the WoS and obtains edge lists suitable
+# to be converted to igraph.
 
-source("./Script/functions.R")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
-
+# Libraries
 library(igraph)
 library(scales)
 library(RColorBrewer)
 library(ggplot2)
 
+# Clear workspace
+rm(list=ls())
+
+# Set directors
+setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
+
+# Load functions
+source("./Script/functions.R")
+load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
+load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
 
 # Get names of all text files with Web of Science data for relevant timespan
 files <- list.files("./Data", pattern= "2013.+txt")
@@ -39,41 +47,37 @@ for (i in 1:length(files)) {
 # Rename object
 data <- all.data
 
-## Split the data based on WC
+## Split the data based on WC (Web of Science Category)
 ## =================================================================================================
 
 # The data frame "discipline" classifies records into "computer science", "social science", "physics"
-discipline <- as.data.frame(matrix(rep(NA, 3*nrow(data)), ncol=3))
-names(discipline) <- c("computer", "social", "physics")
-# Records from computer science
-discipline$computer[grep("computer science|informatic", data$WC, ignore.case=TRUE)] <- TRUE
+discipline <- as.data.frame(matrix(rep(NA, 2*nrow(data)), ncol=2))
+names(discipline) <- c("social", "comp_physics")
+
 # Records from social sciences
 discipline$social[grep("Social Sciences|Sociology|Public, Environmental & Occupational Health|Anthropology|Management|Business|Economics|Education|Psychology|Gepgraphy|Political science|Behavioral sciences", data$WC, ignore.case=TRUE)] <- TRUE
-# Records from physics
-discipline$physics[grep("physics", data$WC, ignore.case=TRUE)] <- TRUE
+
+# Records from computer science + physics
+discipline$comp_physics[grep("computer science|informatic|physics", data$WC, ignore.case=TRUE)] <- TRUE
 
 # NAs are FALSEs in the dataframe
-for (i in 1:3) {
+for (i in 1:2) {
   discipline[[i]][is.na(discipline[[i]])] <- FALSE
 }
 
 # Cross tab
 # table(discipline[,1:2])
-# table(discipline[,c(1,3)])
-# table(discipline[,2:3])
-# There are few double assignments, primarily in social science/computer science (i.e. same paper
-# classified as both computer science and social sciences).
-# Double assignments will be assigned to both disciplines: i.e. a paper classified as both social
-# sciences and computer science in the WoS will be included in both the social sciences and the
-# computer science field.
+# There are few double assignments. Double assignments will be assigned to both disciplines: i.e. a
+# paper classified as both social sciences and computer science in the WoS will be included in both
+# the social sciences and the computer science field.
+# Note that some papers do not fall in either category (neither Social Sciences, nor Computer Science + Physics).
 
 # Split the data
 social.13 <- data[discipline$social,]
-computer.13 <- data[discipline$computer,]
-physics.13 <- data[discipline$physics,]
+comp_physics.13 <- data[discipline$comp_physics,]
 
 # Save
-save(social.13, computer.13, physics.13, file="./Data/records.13.rda")
+save(social.13, comp_physics.13, file="./Data/records.13.rda")
 
 
 
