@@ -1,2 +1,5 @@
 temp.*
 .Rhistory
+*.png
+.Rapp.history
+notes.org
