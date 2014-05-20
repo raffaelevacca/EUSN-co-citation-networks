@@ -30,39 +30,6 @@ gr2 <- comp_physics.one
 ## Check author name consistency
 ## -----------------------------------------------------------------------------------------------
 
-# In a few cases a single author is duplicated into multiple authors because of the first name. So
-# let's remove the first name and only keep the last name. However we need to exclude those with
-# very common last names, in which case this operation aould aggregate multiple different authors
-# into a single author.
-
-# Last names to be excluded 
-exclude <- c("world", "centers", "lin", "cohen", "van", "li", "yu", "wang", "ma", "liu", "zhang", "chen", "zhou", "tang", "huang", "jung", "lu", "fu", "hu")
-# Add regexp pattern
-exclude <- sapply(exclude, function(x) paste("^", x, "\\>", sep=""))
-# Collapse for use into grep
-exclude <- paste(exclude, collapse="|")
-
-# Create list of graph to be used for the loop
-l <- list("gr1"= gr1, "gr2"= gr2)
-
-for (i in 1:length(l)) {
-  
-  # Get the graph
-  gr <- l[[i]]
-  
-  # Author names to be replaced (=with a blank)
-  index1 <- grepl(" ", V(gr)$name)
-  # Author names with last names to be exluded
-  index2 <- grepl(exclude, V(gr)$name)
-  
-  # Get the names to be replaces (except those to be excluded), and replace them with their last name.
-  V(gr)$name[index1 & !index2] <- sapply(V(gr)$name[index1 & !index2], function(y) unlist(strsplit(y, " "))[1])
-  
-  # Reassign the graph
-  assign(names(l)[i], gr)
-}
-
-
 # Check that name spelling is consistent across social network and network science graphs.
 data1 <- data.frame(name= V(gr1)$name, gr1=1, stringsAsFactors=FALSE)
 data2 <- data.frame(name= V(gr2)$name, gr2=1, stringsAsFactors=FALSE)
@@ -86,8 +53,8 @@ for (i in 2:3) {
 ## -----------------------------------------------------------------------------------------------
 
 # Before merging the networks, we remove edges from each network based on the *relative*
-# distribution of edge weights (=number times 2 authors are co-cited) in each network. That way we
-# don't have to set a single rule for the 3 networks (= 3 different disciplines) afterwards.
+# distribution of edge weights (=number times 2 authors are co-cited) in each network. This way we
+# don't have to set a single threshold for the 2 networks (= 2 different disciplines) afterwards.
 # We remove in each network all the edges with weight below the 0.9 percentile. In other words, we
 # only keep the *most* co-cited in each network.
 gr1 <- delete.edges(gr1, E(gr1)[weight < quantile(E(gr1)$weight, prob= 0.9)])
@@ -199,11 +166,11 @@ v.f.col <- alpha.col(v.f.col, 0.8)
 ## Within Social Sciences
 E(gr)[v1 %--% v1]$color <- e.col[1]
 ## Between Social Sciences and Overlap
-E(gr)[v1 %--% v3]$color <- e.col[3]
+E(gr)[v1 %--% v3]$color <- e.col[1]
 ## Within Comp+Physics
 E(gr)[v2 %--% v2]$color <- e.col[2]
 ## Between Comp+Physics and Overlap
-E(gr)[v2 %--% v3]$color <- e.col[3]
+E(gr)[v2 %--% v3]$color <- e.col[2]
 ## Within Overlap
 E(gr)[v3 %--% v3]$color <- e.col[3]
 ## Notice that by construction there are no edges between Social Sciences and Comp+Physics
@@ -221,6 +188,6 @@ V(gr)[v3]$frame.color <- v.f.col[3]
 
 
 # Plot
-png.def("./Figures/temp.png")
+png.def("./Figures/union.png")
 plot.gr(gr, layout= layout, vertex.size=v.size, vert.col= V(gr)$color, vert.frame.col= V(gr)$frame.color, edge.width= width, edge.color= E(gr)$color)
 dev.off()
