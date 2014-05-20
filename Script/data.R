@@ -10,7 +10,7 @@ library(ggplot2)
 # Clear workspace
 rm(list=ls())
 
-# Set directors
+# Set directory
 setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
 
 # Load functions
@@ -50,7 +50,7 @@ data <- all.data
 ## Split the data based on WC (Web of Science Category)
 ## =================================================================================================
 
-# The data frame "discipline" classifies records into "computer science", "social science", "physics"
+# The data frame "discipline" classifies records into "computer science" vs "social science" OR "physics"
 discipline <- as.data.frame(matrix(rep(NA, 2*nrow(data)), ncol=2))
 names(discipline) <- c("social", "comp_physics")
 
@@ -75,9 +75,10 @@ for (i in 1:2) {
 # Split the data
 social.13 <- data[discipline$social,]
 comp_physics.13 <- data[discipline$comp_physics,]
+all.13 <- data
 
 # Save
-save(social.13, comp_physics.13, file="./Data/records.13.rda")
+save(all.13, social.13, comp_physics.13, file="./Data/records.13.rda")
 
 
 
