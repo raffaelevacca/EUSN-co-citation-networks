@@ -1,0 +1,45 @@
+# Set working directory
+setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
+
+# Libraries
+library(igraph)
+library(scales)
+library(RColorBrewer)
+library(ggplot2)
+library(Hmisc)
+
+# Clear workspace
+rm(list=ls())
+
+# Load functions
+source("./Script/functions.R")
+load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
+load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
+
+# Load data
+load("./Data/graphs.rda")
+
+####################################################################################################
+### 2011-2013                                                                                    ###
+####################################################################################################
+
+# Set the timespan identifier
+year <- "13"
+
+# Merge the networks from social sciences and comp science + physics 
+source("./Script/union.graph.01.R")
+
+####################################################################################################
+### 2008-2010                                                                                    ###
+####################################################################################################
+
+# Set the timespan identifier
+year <- "10"
+
+# Merge the networks from social sciences and comp science + physics 
+source("./Script/union.graph.01.R")
+
+
+
+
+save(list= ls(pattern= "social\\.one\\.|comp_physics\\.one\\.|union\\.gr\\."), file="./Data/graphs.rda")
