@@ -6,10 +6,6 @@ year <- "13"
 
 gr <- get(paste("union.gr.", year, sep=""))
 
-# # Only keep main component
-# comp <- clusters(gr)
-# gr <- delete.vertices(gr, V(gr)[comp$membership!=3])
-# 
 # # Remove pendants (degree==1)
 # gr <- delete.vertices(gr, V(gr)[degree(gr) == 1])
 

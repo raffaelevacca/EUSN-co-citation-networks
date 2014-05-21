@@ -44,5 +44,21 @@ union.gr <- union.graph(gr1, gr2, w.names= c("weight", "weight"), output.w.names
 # Calculate total edge weight
 E(union.gr)$weight <- E(union.gr)$weight.1 + E(union.gr)$weight.2
 
+# Create vertex attribute that gives discipline: 1= social sciences, 2= comp sciences or physics, 3= both
+V(union.gr)$discipline <- NA
+V(union.gr)[vertex.1 & !vertex.2]$discipline <- 1
+V(union.gr)[!vertex.1 & vertex.2]$discipline <- 2
+V(union.gr)[vertex.1 & vertex.2]$discipline <- 3
+
+# Only keep the main component
+## Find components
+comp <- clusters(union.gr)
+## Vertex sequence in the main component
+main <- V(union.gr)[comp$membership==which(comp$csize==max(comp$csize))[1]]
+## Size of main comp as a proportion of network size: save as network attribute
+union.gr$prop.main <- length(main)/vcount(union.gr)
+## Only keep main component in graph
+union.gr <- delete.vertices(union.gr, V(union.gr)[comp$membership!=which(comp$csize==max(comp$csize))[1]])
+
 # Save
 assign(paste("union.gr.", year, sep=""), union.gr)

@@ -259,7 +259,3 @@ vert.attr.multi <- function(data, graph, dataID, graphID= "name", attributes, at
   
 }
 
-
-
-# Save functions
-# save.image("./Data/functions.rfn")

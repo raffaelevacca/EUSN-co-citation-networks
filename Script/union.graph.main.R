@@ -39,7 +39,5 @@ year <- "10"
 # Merge the networks from social sciences and comp science + physics 
 source("./Script/union.graph.01.R")
 
-
-
-
+# Save graphs
 save(list= ls(pattern= "social\\.one\\.|comp_physics\\.one\\.|union\\.gr\\."), file="./Data/graphs.rda")
