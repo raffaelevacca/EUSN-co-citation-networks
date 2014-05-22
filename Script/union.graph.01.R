@@ -9,22 +9,22 @@ gr2 <- get(paste("comp_physics.one.", year, sep=""))
 ## -----------------------------------------------------------------------------------------------
 
 # Check that name spelling is consistent across social network and network science graphs.
-data1 <- data.frame(name= V(gr1)$name, gr1=1, stringsAsFactors=FALSE)
-data2 <- data.frame(name= V(gr2)$name, gr2=1, stringsAsFactors=FALSE)
+names.1 <- data.frame(name= V(gr1)$name, gr1=1, stringsAsFactors=FALSE)
+names.2 <- data.frame(name= V(gr2)$name, gr2=1, stringsAsFactors=FALSE)
 ## Merge
-data <- merge(data1, data2, by="name", all=TRUE)
+names <- merge(names.1, names.2, by="name", all=TRUE)
 ## Reorder
-data <- data[order(data$name),]
+names <- names[order(names$name),]
 
 # Replace 1 with TRUE and NA with FALSE
 for (i in 2:3) {
-  data[[i]][is.na(data[[i]])] <- 0
-  data[[i]] <- as.logical(data[[i]])
+  names[[i]][is.na(names[[i]])] <- 0
+  names[[i]] <- as.logical(names[[i]])
 }
 
 # # Tabulate
 # ## Author overlap between social sciences and computer sciences + physics
-# table(data[,2:3])
+# table(names[,2:3])
 
 
 ## Get the union graphs with edge weights

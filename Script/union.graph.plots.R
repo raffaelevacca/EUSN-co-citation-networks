@@ -2,8 +2,10 @@
 ### Plots for the union graph                                                                    ###
 ## =================================================================================================
 
-year <- "13"
+# Set the year
+year <- "10"
 
+# Get the graph
 gr <- get(paste("union.gr.", year, sep=""))
 
 # # Remove pendants (degree==1)

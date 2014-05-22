@@ -3,3 +3,5 @@ temp.*
 *.png
 .Rapp.history
 notes.org
+/Figures/
+/animation/
