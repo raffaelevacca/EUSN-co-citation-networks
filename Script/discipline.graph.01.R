@@ -16,7 +16,11 @@ all.cr <- do.call(rbind, all.cr)
 
 # Some authors have a blank (" ") as first character, this creates problems with the following
 # string manipulations. Correct this.
-all.cr$author[grep("^ ", all.cr$author)] <- sapply(all.cr$author[grep("^ ", all.cr$author)], function(y) gsub("^ ", "", y)) 
+## Only if there are names with a leading blank...
+if (length(all.cr$author[grep("^ ", all.cr$author)])>0) {
+  ## ...remove leading blank
+  all.cr$author[grep("^ ", all.cr$author)] <- sapply(all.cr$author[grep("^ ", all.cr$author)], function(y) gsub("^ ", "", y)) 
+}
 
 # Save as a backup
 all.cr.first <- all.cr
