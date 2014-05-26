@@ -2,9 +2,6 @@
 ### Plots for the union graph                                                                    ###
 ## =================================================================================================
 
-# Set the year
-year <- "10"
-
 # Get the graph
 gr <- get(paste("union.gr.", year, sep=""))
 
@@ -87,9 +84,9 @@ e.col[2] <- pal.2[6]
 e.col[3] <- pal.3[6]
 
 # Apply transparency
-e.col <- alpha.col(e.col, 0.5)
-v.col <- alpha.col(v.col, 0.8)
-v.f.col <- alpha.col(v.f.col, 0.8)
+e.col <- alpha.col(e.col, 0.3)
+v.col <- alpha.col(v.col, 0.65)
+v.f.col <- alpha.col(v.f.col, 0.9)
 
 # Edges of different types with different colors
 ## Within Social Sciences

@@ -1,7 +1,3 @@
-####################################################################################################
-### SOCIAL SCIENCES                                                                              ###
-####################################################################################################
-
 # Save column with article cited references
 all.cr <- data$CR
 
@@ -27,9 +23,6 @@ all.cr.first <- all.cr
 
 # Get number of citations and only keep the top cited authors in edge list
 ## -----------------------------------------------------------------------------------------------
-
-# Number of top authors to be kept in the final network
-n.top <- 150
 
 # Remove empty strings and "anonymous" from all.cr
 all.cr <- all.cr[!(all.cr$author %in% c("", "anonymous")),]
@@ -78,35 +71,3 @@ citations <- as.data.frame(table(all.cr$author), stringsAsFactors=FALSE)
 # Order by number of citations
 citations <- citations[order(citations$Freq, decreasing=TRUE),]
 
-# Names of top 
-top <- citations$Var1[1:n.top]
-
-# Keep only top authors in all.cr
-top.cr <- all.cr[all.cr$author %in% top,]
-
-# Because top.cr will be used to create an edge list, duplicates can now be removed. This means that
-# when calculating co-citations between A and B by third papers, only being cited together by a
-# unique paper matters for A and B; if A or B have been cited multiple times by that paper, that
-# doesn't matter.
-top.cr <- top.cr[!duplicated(top.cr),]
-
-# How many papers and authors are there?
-# length(unique(top.cr$paper))
-# length(unique(top.cr$author))
-
-
-# Get the graphs
-## -------------------------------------------------------------------------------------------------
-
-# Get the two-mode graph author->citing paper from 
-bi.author.gr <- graph.data.frame(top.cr, directed=FALSE)
-
-# This will give the "type" vertex attribute for the bi.gr graph: vertex names with letters are authors, otherwise they are papers.
-V(bi.author.gr)$type <- grepl("[a-z]", V(bi.author.gr)$name)
-
-# Get the one mode projection of authors by authors
-author.gr <- bipartite.projection(bi.author.gr)[[1]]
-
-# Save
-assign(paste(discipline, ".bi.", year, sep=""), bi.author.gr)
-assign(paste(discipline, ".one.", year, sep=""), author.gr)

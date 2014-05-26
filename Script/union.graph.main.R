@@ -29,6 +29,9 @@ year <- "13"
 # Merge the networks from social sciences and comp science + physics 
 source("./Script/union.graph.01.R")
 
+# Plot
+source("./Script/union.graph.plots.R")
+
 ####################################################################################################
 ### 2008-2010                                                                                    ###
 ####################################################################################################
@@ -38,6 +41,9 @@ year <- "10"
 
 # Merge the networks from social sciences and comp science + physics 
 source("./Script/union.graph.01.R")
+
+# Plot
+source("./Script/union.graph.plots.R")
 
 # Save graphs
 save(list= ls(pattern= "social\\.one\\.|comp_physics\\.one\\.|union\\.gr\\."), file="./Data/graphs.rda")

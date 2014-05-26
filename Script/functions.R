@@ -44,7 +44,7 @@ au.names <- function(x) {
 }
 
 # Gets a "reordered" edge list with edge weights from a graph. 
-ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) {
+ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight"), numeric.attribute= TRUE) {
   # This function is to be used by union.graph.weight(). 
   # "ordered" means that in the edge list, the "from" vertex name is always lower than the "to"
   # vertex name. This is useful to find duplicated edges in undirected graphs.
@@ -53,6 +53,7 @@ ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) 
   # -- gr: (igraph or network) the graph
   # -- w.name: (character) the name of the edge weight attribute
   # -- data.names: (character) the name of columns in the resulting data.frame
+  # -- numeric.attribute: (logical) is the edge attribute numeric (TRUE) or not?
   #
   # Return value:
   # A data.frame with the edge list plus edge weights, and ordered (vertex names in the 1st column
@@ -91,6 +92,11 @@ ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) 
   
   # Rename variables
   names(el) <- data.names
+  
+  # If the edge attribute is numeric, convert to numeric
+  if(numeric.attribute) {
+    el[[data.names[3]]] <- as.numeric(el[[data.names[3]]])
+  }
   
   # Which data.frame record has "from" larger than "to"
   swap <- which(el[,"from"] > el[,"to"])
