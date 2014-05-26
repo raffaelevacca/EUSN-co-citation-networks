@@ -6,18 +6,19 @@ library(networkDynamic)
 library(ndtv)
 library(igraph)
 library(intergraph)
+library(scales)
 
 rm(list=ls())
-
-# # Load data
-# load("/Users/work/Documents/Dropbox/_Lavoro/2013-02_CTSI_network_data/Data/CTSI_networks.rda")
-# load("/Users/work/Documents/Dropbox/_Lavoro/2013-02_CTSI_network_data/Data/CTSI_graphs.rda")
-# load("./Data/layout.matrixes.rda")
 
 # Load functions
 source("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.R")
 source("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.R")
 source("./Script/functions.R")
+
+
+## =================================================================================================
+### Get the data                                                                                 ###
+## =================================================================================================
 
 # Load data
 load("./Data/graphs.rda")
@@ -53,6 +54,11 @@ for (i in 2:3) {
 # # Tabulate
 # ## Author overlap between social sciences and computer sciences + physics
 # table(names[,c("y10", "y13")])
+
+
+## =================================================================================================
+### Get the networkDynamic object                                                                ###
+## =================================================================================================
 
 # Create networkDynamic object
 net.dyn <- networkDynamic(network.list= list(union.net.10, union.net.13), vertex.pid= "vertex.names")
@@ -138,18 +144,17 @@ net.dyn <- compute.animation(net.dyn, slice.par=list(start=0, end=1, interval= 1
 # plot(net, coord= coord, vertex.col= "color", vertex.cex= "size", vertex.border= "grey40", edge.col= "grey", edge.lwd= 0.01)
 # dev.off()
 
-## Vertex discipline TEA
-## -------------------------------------------------------------------------------------------------
-# After the conversion to networkDynamic object, vertex attributes ctsi08-ctsi12 are vectors of 
-# length 1660, one value for each vertex *of the networkDynamic* network.
-# However, it looks like these vertex attributes are messed up in the networkDynamic object, i.e.
-# they are not put in the right order.
-# So I get the ctsi09-ctsi12 attributes from the original networks.
+## =================================================================================================
+### Get the discipline vertex attribute as a TEA attribute                                       ###
+## =================================================================================================
 
 # Data.frame with vertex.names from dynamic network
-names <- network.vertex.names(net.dyn)
+dyn.names <- network.vertex.names(net.dyn)
 # Save the order of vertexes in the dynamic network
-attributes <- data.frame(v= names, order= 1:length(names))
+dyn.names <- data.frame(names= dyn.names, order= 1:length(dyn.names), stringsAsFactors=FALSE)
+
+# Preassign disciplines data frame
+disciplines <- dyn.names
 
 # Get discipline in each year from static network vertex attributes
 for (i in c("10", "13")) {
@@ -161,34 +166,31 @@ for (i in c("10", "13")) {
   disc <- net %v% "discipline"
   
   # Put vertex names and discipline into data.frame
-  disc <- data.frame(v= net %v% "vertex.names", disc= disc)
+  disc <- data.frame(names= net %v% "vertex.names", disc= disc)
   
   # Rename discipline variable
   names(disc)[2] <-  paste("y", i, sep="")
   
   # Merge with vertex.names from net.dyn
-  attributes <- merge(attributes, disc, all.x=TRUE)
+  disciplines <- merge(disciplines, disc, by= "names", all.x=TRUE)
 }
 
 # Put records back in the order of vertices in net.dyn
-attributes <- attributes[order(attributes$order),]
-
-# Get relevant attributes
-disciplines <- attributes[grep("y", names(attributes))]
+disciplines <- disciplines[order(disciplines$order),]
 
 # Use list to create a single TEA disc.active in the networkDynamic object, in each year
-for (i in 1:length(disciplines)) {
-  activate.vertex.attribute(net.dyn, "discipline", as.list(disciplines[[i]]), at= i-1)
+## Attribute name in each year
+y <- c("y10", "y13")
+## For each year
+for (i in 1:length(y)) {
+  activate.vertex.attribute(net.dyn, "discipline", disciplines[[y[i]]], at= i-1)
 }
 
 # get.vertex.attribute.active(net.dyn, "discipline", at=0)
 
-# Set graphical vertex Time Extended Attributes
-## -------------------------------------------------------------------------------------------------
-
-# ---------- Vertex color TEA
-
-# Create color list that selects color based on discipline value
+## =================================================================================================
+### Get graphical attributes as TEAs                                                             ###
+## =================================================================================================
 
 # RColorBrewer palettes
 pal.1 <- brewer.pal(9, "Blues")
@@ -214,49 +216,99 @@ e.col[2] <- pal.2[6]
 e.col[3] <- pal.3[6]
 
 # Apply transparency
-e.col <- alpha.col(e.col, 0.5)
-v.col <- alpha.col(v.col, 0.8)
-v.f.col <- alpha.col(v.f.col, 0.8)
+e.col <- alpha.col(e.col, 0.3)
+v.col <- alpha.col(v.col, 0.65)
+v.f.col <- alpha.col(v.f.col, 0.9)
+
+# Vertex color
+## -------------------------------------------------------------------------------------------------
 
 # Replicate disciplines
 v.color <- disciplines
 
-# Populate v.color list
-for (i in 1:length(v.color)) {
+# Populate v.color 
+variables <- c("y10", "y13")
+for (v in variables) {
 # Social sciences v.color
-v.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==1] <- v.col[1]
+v.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==1] <- v.col[1]
 # Comp science + physics v.color
-v.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==2] <- v.col[2]
+v.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==2] <- v.col[2]
 # Both v.color
-v.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==3] <- v.col[3]
+v.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==3] <- v.col[3]
 }
 
 
-## Use v.color list to assign v.color.active to the networkDyanmic object
+## Use v.color to assign v.color.active to the networkDyanmic object
+v.color <- v.color[,variables]
 for (i in 1:length(v.color)) {
-  activate.vertex.attribute(net.dyn, "v.color", as.list(v.color[[i]]), at= i-1)
+  activate.vertex.attribute(net.dyn, "v.color", v.color[[i]], at= i-1)
 }
 
-# ---------- Vertex frame color TEA
+# Vertex frame color
+## -------------------------------------------------------------------------------------------------
 
 # Replicate disciplines
 v.f.color <- disciplines
 
-# Populate v.color list
-for (i in 1:length(v.f.color)) {
-  # Social sciences v.color
-  v.f.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==1] <- v.f.col[1]
+# Populate v.f.color 
+variables <- c("y10", "y13")
+for (v in variables) {
+  # Social sciences v.f.color
+  v.f.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==1] <- v.f.col[1]
   # Comp science + physics v.f.color
-  v.f.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==2] <- v.f.col[2]
+  v.f.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==2] <- v.f.col[2]
   # Both v.f.color
-  v.f.color[[i]][!is.na(disciplines[[i]]) & disciplines[[i]]==3] <- v.f.col[3]
+  v.f.color[[v]][!is.na(disciplines[[v]]) & disciplines[[v]]==3] <- v.f.col[3]
 }
 
-
-## Use v.color list to assign v.color.active to the networkDyanmic object
+## Use v.f.color to assign v.f.color.active to the networkDyanmic object
+v.f.color <- v.f.color[,variables]
 for (i in 1:length(v.f.color)) {
-  activate.vertex.attribute(net.dyn, "v.f.color", as.list(v.f.color[[i]]), at= i-1)
+  activate.vertex.attribute(net.dyn, "v.f.color", v.f.color[[i]], at= i-1)
 }
+
+# Vertex size
+## -------------------------------------------------------------------------------------------------
+
+# Pre-assign degree data frame for dynamic network
+dyn.degree <- dyn.names
+
+# Get degree in each year 
+for (i in c("10", "13")) {
+  
+  # Get network
+  gr <- get(paste("union.gr.", i, sep=""))
+  
+  # Get degree
+  degree <- igraph::degree(gr)
+  
+  # As data.frame
+  degree <- data.frame(names= names(degree), degree= degree, stringsAsFactors=FALSE)
+  
+  # Rename
+  names(degree)[2] <- i
+  
+  # Merge with vertex.names from net.dyn
+  dyn.degree <- merge(dyn.degree, degree, by= "names", all.x=TRUE)
+}
+
+# Put records back in the order of vertices in net.dyn
+dyn.degree <- dyn.degree[order(dyn.degree$order),]
+
+# Only keep relevant variables
+v <- c("10", "13")
+dyn.degree <- dyn.degree[v]
+# Rescale
+for (i in 1:length(dyn.degree)) {
+  dyn.degree[[i]] <- rescale(dyn.degree[[i]], c(0.3, 1.5))
+}
+
+
+# Use list to create a single TEA disc.active in the networkDynamic object, in each year
+for (i in 1:length(v)) {
+  activate.vertex.attribute(net.dyn, "size", dyn.degree[[v[i]]], at= i-1)
+}
+
 
 # # Do the same as above with size: 0.7 for ctsi, 0.35 outside
 # size <- rep(rep(0.35, network.size(net.dyn)), 5)
@@ -271,17 +323,20 @@ for (i in 1:length(v.f.color)) {
 #   activate.vertex.attribute(net.dyn, "size", as.list(size[[i]]), at= i-1)
 # }
 
-# Set graphical edge Time Extended Attributes 
+# Edge weight
 ## -------------------------------------------------------------------------------------------------
 
 # Edge list from dynamic network
 elist.dyn <- as.matrix.network(net.dyn, matrix.type="edgelist")
-# Get vertex names in the order used in edge list
+
+# Get vertex names in the edge list
 vnames <- attr(elist.dyn, "vnames")
 # Get edge list with vertex names instead of vertex ids
 elist.dyn[,1] <- vnames[as.numeric(elist.dyn[,1])]
 elist.dyn[,2] <- vnames[as.numeric(elist.dyn[,2])]
-elist.dyn <- as.data.frame(elist.dyn)
+elist.dyn <- as.data.frame(elist.dyn, stringsAsFactors=FALSE)
+# Rename
+names(elist.dyn) <- c("from", "to")
 
 # Activity spells for each edge
 edge.act <- get.edge.activity(net.dyn)
@@ -290,71 +345,134 @@ edge.act <- get.edge.activity(net.dyn)
 elist.dyn$on <- sapply(edge.act, function(x) x[1])
 elist.dyn$term <- sapply(edge.act, function(x) x[2])
 
-# Edge list with edge weight from a static network
-elist <- as.matrix.network(union.net.13, matrix.type="edgelist", attrname= "weight")
-# Get vertex names in the order used in edge list
-vnames <- attr(elist, "vnames")
-# Get edge list with vertex names instead of vertex ids
-elist[,1] <- vnames[as.numeric(elist[,1])]
-elist[,2] <- vnames[as.numeric(elist[,2])]
-elist <- as.data.frame(elist)
+# Save original order of records (=order of edges) in dynamic network
+elist.dyn$order <- 1:nrow(elist.dyn)
 
+# Sort "from" and "to" so as to avoid duplicated edges when merging with edge list from static networks.
+## Which data.frame record has "from" larger than "to"
+swap <- which(elist.dyn[,"from"] > elist.dyn[,"to"])
 
+# If there are any of these records...
+if (length(swap) > 0) { 
+  # Swap second with first column in those.
+  elist.dyn[swap, 1:2] <- cbind(elist.dyn[swap, 2], elist.dyn[swap, 1]) 
+}
 
-
-# Get discipline in each year from static network vertex attributes
-for (i in c("10", "13")) {
+# Edge lists with edge weights from static networks.
+## Relevant networks in a list
+l <- list("10"= union.net.10, "13"= union.net.13)
+## For each network
+for (i in 1:length(l)) {
   
   # Get network
-  net <- get(paste("union.net.", i, sep=""))
+  net <- l[[i]]
   
-  # Get discipline attribute in network
-  disc <- net %v% "discipline"
+  # Get ordered edge list with weight
+  elist <- ord.el(net, data.names = c("from", "to", paste("w", names(l)[i], sep="")))
   
-  # Put vertex names and discipline into data.frame
-  disc <- data.frame(v= net %v% "vertex.names", disc= disc)
-  
-  # Rename discipline variable
-  names(disc)[2] <-  paste("y", i, sep="")
-  
-  # Merge with vertex.names from net.dyn
-  attributes <- merge(attributes, disc, all.x=TRUE)
+  # Merge with dyn network edge list
+  elist.dyn <- merge(elist.dyn, elist, by= c("from", "to"), all=TRUE)
 }
 
-# Put records back in the order of vertices in net.dyn
-attributes <- attributes[order(attributes$order),]
+# Reorder edge list according to original order of edges in dynamic network
+elist.dyn <- elist.dyn[order(elist.dyn[["order"]]),]
 
-# Get relevant attributes
-disciplines <- attributes[grep("y", names(attributes))]
+# Crop out weights
+weights <- elist.dyn[,c("w10", "w13")]
 
-# Use list to create a single TEA disc.active in the networkDynamic object, in each year
-for (i in 1:length(disciplines)) {
-  activate.vertex.attribute(net.dyn, "discipline", as.list(disciplines[[i]]), at= i-1)
+# Rescale
+for (i in 1:length(weights)) {
+  weights[[i]] <- rescale(weights[[i]], to= c(0.01, 5))
 }
 
-# Get animation
+# Use elist.dyn columns to set TEAs of edge weight in each network
+## For each year's weight
+for (i in 1:length(weights)) {
+  activate.edge.attribute(net.dyn, "weight", weights[[i]], at= i-1)
+}
+
+# describe(get.edge.attribute.active(net.dyn, "weight", at=0))
+
+# Edge color
 ## -------------------------------------------------------------------------------------------------
 
+# Relevant graphs in a list
+l <- list("10"= union.gr.10, "13"= union.gr.13)
+
+# Edges of different types with different colors
+## For each graph
+for (i in 1:length(l)) {
+  
+  # Get the graph
+  gr <- l[[i]]
+  
+  # Social Sciences ONLY vertices
+  v1 <- V(gr)[vertex.1==1 & vertex.2==0]
+  # Comp+Physics Science ONLY vertices
+  v2 <- V(gr)[vertex.1==0 & vertex.2==1]
+  # Overlapping vertices
+  v3 <- V(gr)[vertex.1==1 & vertex.2==1]
+  
+  ## Within Social Sciences
+  E(gr)[v1 %--% v1]$color <- e.col[1]
+  ## Between Social Sciences and Overlap
+  E(gr)[v1 %--% v3]$color <- e.col[1]
+  ## Within Comp+Physics
+  E(gr)[v2 %--% v2]$color <- e.col[2]
+  ## Between Comp+Physics and Overlap
+  E(gr)[v2 %--% v3]$color <- e.col[2]
+  ## Within Overlap
+  E(gr)[v3 %--% v3]$color <- e.col[3]
+  ## Notice that by construction there are no edges between Social Sciences and Comp+Physics
+  # E(gr)[v1 %--% v2]
+  
+  # Reassign the graph
+  assign(paste("union.gr.", names(l)[i], sep=""), gr)
+}
+
+# Edge lists with edge colors from static networks.
+# Relevant graphs in a list
+l <- list("10"= union.gr.10, "13"= union.gr.13)
+## For each graph
+for (i in 1:length(l)) {
+  
+  # Get network
+  gr <- l[[i]]
+  
+  # Get ordered edge list with weight
+  elist <- ord.el(gr, w.name= "color", data.names = c("from", "to", paste("col", names(l)[i], sep="")))
+  
+  # Merge with dyn network edge list
+  elist.dyn <- merge(elist.dyn, elist, by= c("from", "to"), all=TRUE)
+}
+
+# Reorder edge list according to original order of edges in dynamic network
+elist.dyn <- elist.dyn[order(elist.dyn[["order"]]),]
+
+# Crop out colors
+e.colors <- elist.dyn[,c("col10", "col13")]
+
+# Use elist.dyn columns to set TEAs of edge color in each network
+## For each year's weight
+for (i in 1:length(e.colors)) {
+  activate.edge.attribute(net.dyn, "e.color", e.colors[[i]], at= i-1)
+}
+
+# describe(get.edge.attribute.active(net.dyn, "e.color", at=0))
+
+## =================================================================================================
+### Get the animation                                                                            ###
+## =================================================================================================
+
+# Legend for animation
+legend <- expression(legend(2.3, -1.5, legend= c("Social Sciences", "Computer Sciences/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 2.5, pt.cex=4, x.intersp= 0.5))
+
+# Render parameters 
+render.par <- list(tween.frames= 1, extraPlotCmds= legend)
+
 # x11()
-render.animation(net.dyn, vertex.col="v.color", vertex.cex= 0.8, vertex.border= "v.f.color", edge.col= alpha.col("grey", 0.4), edge.lwd= 0.01, displaylabels= FALSE, plot.par= list(bg='white', mai= rep(0, 4)), render.par= list(tween.frames= 50), ani.options=list(interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 2560, ani.height= 1440))
+render.animation(net.dyn, vertex.col="v.color", vertex.cex= "size", vertex.border= "v.f.color", edge.col= "e.color", edge.lwd= "weight", displaylabels= FALSE, plot.par= list(bg='white', mai= rep(0, 4)), render.par= render.par, ani.options=list(interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 3840, ani.height= 2160))
 
 # saveVideo(ani.replay(), video.name= "prova.mp4", other.opts= "-b 10000k -s 1280x720", clean= TRUE)
 
-saveHTML(ani.replay(), interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 960, ani.height= 540)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+saveHTML(ani.replay(), interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 1920, ani.height= 1080, autobrowse=FALSE)

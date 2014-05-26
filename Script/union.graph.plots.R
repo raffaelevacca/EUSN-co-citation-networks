@@ -91,7 +91,6 @@ e.col <- alpha.col(e.col, 0.5)
 v.col <- alpha.col(v.col, 0.8)
 v.f.col <- alpha.col(v.f.col, 0.8)
 
-
 # Edges of different types with different colors
 ## Within Social Sciences
 E(gr)[v1 %--% v1]$color <- e.col[1]

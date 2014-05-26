@@ -44,12 +44,13 @@ au.names <- function(x) {
 }
 
 # Gets a "reordered" edge list with edge weights from a graph. 
-ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) { 
+ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) {
+  # This function is to be used by union.graph.weight(). 
   # "ordered" means that in the edge list, the "from" vertex name is always lower than the "to"
   # vertex name. This is useful to find duplicated edges in undirected graphs.
   #
   # Arguments:
-  # -- gr: (igraph) the graph
+  # -- gr: (igraph or network) the graph
   # -- w.name: (character) the name of the edge weight attribute
   # -- data.names: (character) the name of columns in the resulting data.frame
   #
@@ -58,10 +59,35 @@ ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) 
   # always lower than vertex names in the second column).
   
   # Argument validity
-  stopifnot(is.igraph(gr))
+  stopifnot(is.igraph(gr) | is.network(gr))
   
-  # Get edge list using vertex names V(gr)$name as data.frame.
-  el <- cbind(as.data.frame(get.edgelist(gr), stringsAsFactors=FALSE), get.edge.attribute(gr, w.name))
+  if (is.igraph(gr)) {
+    # Check that gr has relevant edge attribute
+    stopifnot(w.name %in% igraph::list.edge.attributes(gr))
+    
+    # Get edge list using vertex names V(gr)$name as data.frame.
+    el <- as.data.frame(cbind(igraph::get.edgelist(gr), igraph::get.edge.attribute(gr, w.name)), stringsAsFactors=FALSE)
+    
+  } else {
+    # Check that gr has relevant edge attribute
+    stopifnot(w.name %in% network::list.edge.attributes(gr))
+    
+    # Get edgelist
+    el <- network::as.matrix.network(net, matrix.type="edgelist", attrname= w.name)
+    
+    # Get vertex names in the order used in edge list
+    vnames <- attr(el, "vnames")
+    
+    # Get edge list with vertex names instead of vertex ids
+    el[, 1] <- vnames[as.numeric(el[, 1])]
+    el[, 2] <- vnames[as.numeric(el[, 2])]
+    
+    # To data.frame
+    el <- as.data.frame(el, stringsAsFactors=FALSE)
+    
+    # Convert weight to numeric
+    el[[3]] <- as.numeric(el[[3]])
+  }
   
   # Rename variables
   names(el) <- data.names
@@ -78,6 +104,7 @@ ord.el <- function(gr, w.name= "weight", data.names= c("from", "to", "weight")) 
   # Return edge list
   return(el)
 }
+
 
 
 # Generates the union of gr1 and gr2 preserving edge weights from both graphs.
