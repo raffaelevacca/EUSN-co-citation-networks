@@ -10,16 +10,13 @@ gr <- get(paste("union.gr.", year, sep=""))
 
 # Kamada-Kawai layout
 set.seed(0515)
-layout <- layout.kamada.kawai(gr)
-
-# Rotate
-# layout <- rotate.layout(layout, -20)
+layout <- igraph::layout.kamada.kawai(gr)
 
 # Rescale edge weigth to use it as width
 width <- rescale(E(gr)$weight, to= c(0.3, 8))
 
 # Vertex size
-v.size <- rescale(degree(gr), to= c(2, 7))
+v.size <- rescale(igraph::degree(gr), to= c(2, 7))
 
 
 # Plot with author names
@@ -51,7 +48,7 @@ dev.off()
 width <- rescale(E(gr)$weight, to= c(0.5, 8))
 
 # Vertex size
-v.size <- rescale(degree(gr), to= c(1.5, 6))
+v.size <- rescale(igraph::degree(gr), to= c(1.5, 6))
 
 # Social Sciences ONLY vertices
 v1 <- V(gr)[vertex.1==1 & vertex.2==0]

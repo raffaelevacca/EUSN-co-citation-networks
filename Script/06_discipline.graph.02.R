@@ -37,9 +37,6 @@ V(bi.author.gr)$type <- grepl("[a-z]", V(bi.author.gr)$name)
 # Get the one mode projection of authors by authors
 author.gr <- bipartite.projection(bi.author.gr)[[1]]
 
-# Display the graph
-# source("./Script/plot.disc.graph.01.R")
-
 # Save
 assign(paste("social.bi.", year, sep=""), bi.author.gr)
 assign(paste("social.one.", year, sep=""), author.gr)
@@ -76,9 +73,6 @@ V(bi.author.gr)$type <- grepl("[a-z]", V(bi.author.gr)$name)
 
 # Get the one mode projection of authors by authors
 author.gr <- bipartite.projection(bi.author.gr)[[1]]
-
-# Display the graph
-# source("./Script/plot.disc.graph.01.R")
 
 # Save
 assign(paste("comp_physics.bi.", year, sep=""), bi.author.gr)

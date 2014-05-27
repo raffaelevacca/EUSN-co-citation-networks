@@ -1,20 +1,8 @@
 # Set working directory
-setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
-
-library(statnet)
-library(networkDynamic)
-library(ndtv)
-library(igraph)
-library(intergraph)
-library(scales)
-
-rm(list=ls())
+# setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
 
 # Load functions
-source("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.R")
-source("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.R")
-source("./Script/functions.R")
-
+source("./Script/01_functions.R")
 
 ## =================================================================================================
 ### Get the data                                                                                 ###
@@ -137,7 +125,7 @@ disciplines <- disciplines[order(disciplines$order),]
 ## Attribute name in each year
 t <- paste("t", 1:6, sep="")
 ## For each year
-for (i in 1:length(y)) {
+for (i in 1:length(t)) {
   activate.vertex.attribute(net.dyn, "discipline", disciplines[[t[i]]], at= i-1)
 }
 
@@ -405,16 +393,22 @@ for (i in 1:length(e.colors)) {
 ## =================================================================================================
 
 # Legend for animation
-legend <- expression(legend(2.3, -1.5, legend= c("Social Sciences", "Computer Sciences/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 3, pt.cex=4, x.intersp= 0.5))
+legend <- expression(legend(2.3, -1.5, legend= c("Social Sciences", "Computer Sciences/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 4, pt.cex=5, x.intersp= 0.5, y.intersp= 0.5))
 
 # Argument lists
+##
 render.par <- list(tween.frames= 2, extraPlotCmds= legend)
-ani.options <- list(interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 5120, ani.height= 2880)
+## 
+ani.options <- list(interval=0.1, ani.width= 5120, ani.height= 2880)
+# outdir= paste(getwd(), "/Figures/animation", sep="")
+##
 plot.par <- list(bg='white', mai= rep(0, 4))
+# 
 
 # x11()
 render.animation(net.dyn, vertex.col="v.color", vertex.cex= "size", vertex.border= "v.f.color", edge.col= "e.color", edge.lwd= "weight", displaylabels= FALSE, plot.par= plot.par, render.par= render.par, ani.options=ani.options)
 
-saveVideo(ani.replay(), video.name= "temp.mp4", other.opts= "-vcodec libx264 -b 10000k -s 1280x720", clean= TRUE, outdir= paste(getwd(), "/Figures", sep=""))
+# Create video
+saveVideo(ani.replay(), video.name= "temp.mp4", other.opts= "-vcodec libx264 -b 10000k -s 1280x720", clean= FALSE, outdir= paste(getwd(), "/Figures", sep=""))
 
 # saveHTML(ani.replay(), interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 1920, ani.height= 1080, autobrowse=FALSE)

@@ -35,8 +35,8 @@ for (i in 2:3) {
 # don't have to set a single threshold for the 2 networks (= 2 different disciplines) afterwards.
 # We remove in each network all the edges with weight below the 0.9 percentile. In other words, we
 # only keep the *most* co-cited in each network.
-gr1 <- delete.edges(gr1, E(gr1)[weight < quantile(E(gr1)$weight, prob= 0.9)])
-gr2 <- delete.edges(gr2, E(gr2)[weight < quantile(E(gr2)$weight, prob= 0.9)])
+gr1 <- igraph::delete.edges(gr1, E(gr1)[weight < quantile(E(gr1)$weight, prob= 0.9)])
+gr2 <- igraph::delete.edges(gr2, E(gr2)[weight < quantile(E(gr2)$weight, prob= 0.9)])
 
 ## Union graph
 union.gr <- union.graph(gr1, gr2, w.names= c("weight", "weight"), output.w.names= c("weight.1", "weight.2"), vert.attr.names= c("vertex.1", "vertex.2"))
@@ -58,7 +58,7 @@ main <- V(union.gr)[comp$membership==which(comp$csize==max(comp$csize))[1]]
 ## Size of main comp as a proportion of network size: save as network attribute
 union.gr$prop.main <- length(main)/vcount(union.gr)
 ## Only keep main component in graph
-union.gr <- delete.vertices(union.gr, V(union.gr)[comp$membership!=which(comp$csize==max(comp$csize))[1]])
+union.gr <- igraph::delete.vertices(union.gr, V(union.gr)[comp$membership!=which(comp$csize==max(comp$csize))[1]])
 
 # Save
 assign(paste("union.gr.", year, sep=""), union.gr)

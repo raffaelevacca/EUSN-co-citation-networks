@@ -1,22 +1,8 @@
 # This script uses the original .txt data as downloaded from the WoS and obtains edge lists suitable
 # to be converted to igraph.
 
-# Libraries
-library(igraph)
-library(scales)
-library(RColorBrewer)
-library(ggplot2)
-
-# Clear workspace
-rm(list=ls())
-
-# Set directors
-setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
-
 # Load functions
-source("./Script/functions.R")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
+source("./Script/01_functions.R")
 
 ## 2011-2013
 ## =================================================================================================
@@ -25,7 +11,7 @@ load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
 files <- list.files("./Data", pattern= "2013.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # Cross tab
 # table(discipline[,1:2])
@@ -45,7 +31,7 @@ comp_physics.13 <- comp_physics
 files <- list.files("./Data", pattern= "2010.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # table(discipline[,1:2])
 
@@ -60,7 +46,7 @@ comp_physics.10 <- data[discipline$comp_physics,]
 files <- list.files("./Data", pattern= "2007.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # table(discipline[,1:2])
 
@@ -76,7 +62,7 @@ comp_physics.07 <- data[discipline$comp_physics,]
 files <- list.files("./Data", pattern= "2004.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # table(discipline[,1:2])
 
@@ -91,7 +77,7 @@ comp_physics.04 <- data[discipline$comp_physics,]
 files <- list.files("./Data", pattern= "2001.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # table(discipline[,1:2])
 
@@ -106,7 +92,7 @@ comp_physics.01 <- data[discipline$comp_physics,]
 files <- list.files("./Data", pattern= "1998.+txt")
 
 # Source data management script
-source("./Script/data.01.R")
+source("./Script/03_data.01.R")
 
 # table(discipline[,1:2])
 

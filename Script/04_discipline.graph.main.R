@@ -1,20 +1,5 @@
-# Set directory
-setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
-
-# Libraries
-library(igraph)
-library(scales)
-library(RColorBrewer)
-library(ggplot2)
-library(Hmisc)
-
-# Clear workspace
-rm(list=ls())
-
 # Load functions
-source("./Script/functions.R")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
-load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
+source("./Script/01_functions.R")
 
 # Load data
 load("./Data/records.rda")
@@ -48,7 +33,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -70,7 +55,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -83,8 +68,13 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
+## =================================================================================================
+## Display graphs for single disciplines
+## =================================================================================================
+
+# source("./Script/07_plot.disc.graph.R")
 
 ####################################################################################################
 ### 2008-2010                                                                                    ###
@@ -114,7 +104,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -136,7 +126,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -149,7 +139,7 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
 ####################################################################################################
 ### 2005-2007                                                                                    ###
@@ -179,7 +169,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -201,7 +191,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -214,7 +204,7 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
 ####################################################################################################
 ### 2002-2004                                                                                    ###
@@ -244,7 +234,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -266,7 +256,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -279,7 +269,7 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
 
 ####################################################################################################
@@ -310,7 +300,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -332,7 +322,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -345,7 +335,7 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
 
 ####################################################################################################
@@ -376,7 +366,7 @@ original <- c("granovetms")
 replacement <- c("granovetter")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.social <- all.cr
@@ -398,7 +388,7 @@ original <- c("granovetms", "agrawal\\>")
 replacement <- c("granovetter", "agarwal")
 
 # Source script
-source("./Script/discipline.graph.01.R")
+source("./Script/05_discipline.graph.01.R")
 
 # Save data frame of cited authors by citing paper (2-mode edge list)
 all.cr.phys <- all.cr
@@ -411,7 +401,7 @@ citations.phys <- citations
 ## =================================================================================================
 
 # Source script
-source("./Script/discipline.graph.02.R")
+source("./Script/06_discipline.graph.02.R")
 
 # Save
 save(list= ls(pattern="\\.one\\."), file= "./Data/graphs.rda")
