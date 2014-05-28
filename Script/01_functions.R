@@ -691,6 +691,45 @@ set.vert.lab <- function(gr, labels= NA, label.cex= 0.5, label.family= 'sans', l
   
 }
 
+# Get a layout matrix for gr and order its rows according to the order of vertexes in gr.
+layout.order <- function(layout, gr) {
+  # This function is useful if we have a layout matrix for gr, but for some reason the order of
+  # vertexes in gr has changed.
+  # Arguments:
+  # -- gr: (igraph) the graph. Must be named.
+  # -- layout: (matrix) the layout matrix. Must have nrow==vcount(gr). Must have the names of
+  # vertexes in gr as rownames.
+  #
+  # Return value
+  # the ordered matrix.
+  
+  # Argument validity
+  stopifnot(is.igraph(gr), is.named(gr), !is.null(rownames(layout)), nrow(layout)==vcount(gr))
+  stopifnot(all(rownames(layout) %in% V(gr)$name))
+  
+  # Get the vertex order in gr
+  gr.ord <- data.frame(v=V(gr)$name, order=1:vcount(gr))
+  
+  # Get the layout matrix as a data.frame
+  layout.df <- as.data.frame(layout)
+  # Set variable names because we are going to use them below
+  names(layout.df) <- c("V1", "V2")
+  # Get layout rownames (vertex names) as a data.frame variable
+  layout.df$v <- rownames(layout.df)
+  
+  # Bring gr vertex order into layout data.frame
+  layout.df <- merge(layout.df, gr.ord)
+  # Give layout data.frame the same order as gr order
+  layout.df <- layout.df[order(layout.df$order),]
+  
+  # Reconvert layout to matrix
+  layout <- as.matrix(layout.df[,c("V1", "V2")])
+  # Give the matrix the appropriate rownames (vertex names)
+  rownames(layout) <- layout.df$v
+  
+  # Return the matrix
+  return(layout)
+}
 
 ## Graphics
 ## =================================================================================================
