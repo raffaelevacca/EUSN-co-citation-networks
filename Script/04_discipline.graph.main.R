@@ -29,8 +29,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")
@@ -100,8 +100,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")
@@ -165,8 +165,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")
@@ -230,8 +230,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")
@@ -296,8 +296,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")
@@ -362,8 +362,8 @@ data <- get(paste("social.", year, sep=""))
 discipline <- "social"
 
 # Set string replacements to be done to correct mispelled author names
-original <- c("granovetms")
-replacement <- c("granovetter")
+original <- c("granovetms", "agrawal\\>")
+replacement <- c("granovetter", "agarwal")
 
 # Source script
 source("./Script/05_discipline.graph.01.R")

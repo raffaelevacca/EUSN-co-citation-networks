@@ -407,11 +407,11 @@ for (i in 1:length(e.colors)) {
 ## =================================================================================================
 
 # Legend for animation
-legend <- expression(legend(2.3, -0.9, legend= c("Social Science", "Computer Science/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 5, pt.cex=6, x.intersp= 0.5, y.intersp= 0.3))
-
+legend <- expression(legend(2.3, -0.9, legend= c("Social Science", "Computer Science/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="o", cex= 5, pt.cex=6, x.intersp= 0.2, y.intersp= 0.3, title= "Author cited in"))
+# text(0, 0, labels= "TRIAL", cex=5)
 # Argument lists
 ##
-render.par <- list(tween.frames= 50, extraPlotCmds= legend)
+render.par <- list(tween.frames= 2, extraPlotCmds= legend)
 ## 
 ani.options <- list(interval=0.1, ani.width= 5120, ani.height= 2880)
 # outdir= paste(getwd(), "/Figures/animation", sep="")

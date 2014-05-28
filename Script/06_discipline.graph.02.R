@@ -1,9 +1,17 @@
-# Number of top social sciences authors to keep in the final network
-# (proportional to number of cited authors in discipline over total)
-n.top.social <- round(300*(nrow(citations.social) /(nrow(citations.social) + nrow(citations.phys))))
-
-# Number of top comp science/phys authors to keep
-n.top.phys <- 300 - n.top.social
+# Find proportion of authors citedin the social sciences vs comp science/physics.
+## Set discipline identifier
+citations.social$social <- TRUE
+citations.phys$phys <- TRUE
+## Merge
+citations.all <- merge(citations.social, citations.phys, by="Var1", all=TRUE)
+## The identifier are FALSE if NAs
+citations.all$social[is.na(citations.all$social)] <- FALSE
+citations.all$phys[is.na(citations.all$phys)] <- FALSE
+## Table
+tab <- table(citations.all$social, citations.all$phys)
+## Set number of top authors to keep in each discipline as proportion of authors cited in that discipline
+n.top.phys <- round(300*(sum(tab[,2])/sum(tab)))
+n.top.social <- round(300*(sum(tab[2,])/sum(tab)))
 
 ## SOCIAL SCIENCES 
 ## -----------------------------------------------------------------------------------------------
