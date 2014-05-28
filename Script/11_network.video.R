@@ -1,6 +1,3 @@
-# Set working directory
-# setwd("/Users/work/Documents/Dropbox/_Lavoro/2014-05-14_EUSN_Vizaward/")
-
 # Load functions
 source("./Script/01_functions.R")
 
@@ -57,7 +54,7 @@ for (i in 2:3) {
 load("./Data/dynamic.network.rda")
 
 # Save
-save(net.dyn, file= "./Data/dynamic.network.rda")
+# save(net.dyn, file= "./Data/dynamic.network.rda")
 
 # Check that networkDynamic() results are consistent with previous data.frame
 ## Dataframe of vertex activity
@@ -86,6 +83,22 @@ network.size(network.collapse(net.dyn, at=1)) == network.size(union.net.2)
 # Compute layouts for animation (Kamada-Kawai)
 set.seed(0522)
 net.dyn <- compute.animation(net.dyn, slice.par=list(start=0, end=6, interval= 1, aggregate.dur= 1, rule="latest"))
+
+# y coordinate range
+# range(get.vertex.attribute.active(net.dyn, "animation.y", at=0), na.rm=TRUE)
+
+# Save coordinates for 2011-13 layout to be used in the static plot
+dyn.layout <- matrix(c(get.vertex.attribute.active(net.dyn, "animation.x", at=5), get.vertex.attribute.active(net.dyn, "animation.y", at=5)), ncol=2)
+# Save vertex names in dynamic network
+names <- network.vertex.names(net.dyn)
+# Only keep vertex names for non NA rows in the layout
+names <- names[!is.na(dyn.layout[,1])]
+# Only keep non NA rows (only vertices who are in the 2011-13 network)
+dyn.layout <- dyn.layout[!is.na(dyn.layout[,1]),]
+# Set vertex names as rownames
+rownames(dyn.layout) <- names
+# Save
+save(dyn.layout, file="./Data/dyn.layout.rda")
 
 ## =================================================================================================
 ### Get the discipline vertex attribute as a TEA attribute                                       ###
@@ -160,8 +173,9 @@ e.col[3] <- pal.3[6]
 
 # Apply transparency
 e.col <- alpha.col(e.col, 0.3)
-v.col <- alpha.col(v.col, 0.65)
-v.f.col <- alpha.col(v.f.col, 0.9)
+v.col <- alpha.col(v.col, 0.6)
+# 0.65
+# v.f.col <- alpha.col(v.f.col, 0.9)
 
 # Vertex color
 ## -------------------------------------------------------------------------------------------------
@@ -393,22 +407,24 @@ for (i in 1:length(e.colors)) {
 ## =================================================================================================
 
 # Legend for animation
-legend <- expression(legend(2.3, -1.5, legend= c("Social Sciences", "Computer Sciences/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 4, pt.cex=5, x.intersp= 0.5, y.intersp= 0.5))
+legend <- expression(legend(2.3, -0.9, legend= c("Social Science", "Computer Science/Physics", "Both"), pch= c(21, 21, 21), col= v.f.col, pt.bg= v.col, bty="n", cex= 5, pt.cex=6, x.intersp= 0.5, y.intersp= 0.3))
 
 # Argument lists
 ##
-render.par <- list(tween.frames= 2, extraPlotCmds= legend)
+render.par <- list(tween.frames= 50, extraPlotCmds= legend)
 ## 
 ani.options <- list(interval=0.1, ani.width= 5120, ani.height= 2880)
 # outdir= paste(getwd(), "/Figures/animation", sep="")
 ##
 plot.par <- list(bg='white', mai= rep(0, 4))
-# 
 
 # x11()
-render.animation(net.dyn, vertex.col="v.color", vertex.cex= "size", vertex.border= "v.f.color", edge.col= "e.color", edge.lwd= "weight", displaylabels= FALSE, plot.par= plot.par, render.par= render.par, ani.options=ani.options)
+render.animation(net.dyn, vertex.col="v.color", vertex.cex= "size", vertex.border= "v.f.color", edge.col= "e.color", edge.lwd= "weight", displaylabels= FALSE, plot.par= plot.par, render.par= render.par, ani.options=ani.options, xlim= c(-2,2))
 
 # Create video
-saveVideo(ani.replay(), video.name= "temp.mp4", other.opts= "-vcodec libx264 -b 10000k -s 1280x720", clean= FALSE, outdir= paste(getwd(), "/Figures", sep=""))
+saveVideo(ani.replay(), video.name= "network.video.mp4", other.opts= "-codec:v libx264 -tune stillimage -pix_fmt yuv420p -profile:v main -b:v 10000k -maxrate 10000k -bufsize 20000k -threads 0 -aspect 16:9 -s 1280x720", clean= FALSE, outdir= paste(getwd(), "/Figures", sep=""))
 
+#### NOTE #### ffmpeg options -pix_fmt yuv420p -profile:v main are needed for Apple Quicktime and iMovie to be able to decode the video.
+
+# For HTMl animation
 # saveHTML(ani.replay(), interval=0.1, outdir= paste(getwd(), "/Figures", sep=""), ani.width= 1920, ani.height= 1080, autobrowse=FALSE)

@@ -1,7 +1,5 @@
 # Load functions
 source("./Script/01_functions.R")
-# load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graph.plots.rfn")
-# load("/Volumes/WorkDrive/Lavoro/_Lavori/R_functions/graphics.funs.rfn")
 
 # Load data
 load("./Data/graphs.rda")
