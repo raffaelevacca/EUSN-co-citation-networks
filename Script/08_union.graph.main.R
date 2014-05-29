@@ -1,8 +1,8 @@
 # Load functions
-source("./Script/01_functions.R")
+# source("./Script/01_functions.R")
 
 # Load data
-load("./Data/graphs.rda")
+# load("./Data/graphs.rda")
 
 ####################################################################################################
 ### 2011-2013                                                                                    ###

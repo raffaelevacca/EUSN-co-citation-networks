@@ -1,12 +1,12 @@
 # Load functions
-source("./Script/01_functions.R")
+# source("./Script/01_functions.R")
 
 ## =================================================================================================
 ### Get the data                                                                                 ###
 ## =================================================================================================
 
 # Load data
-load("./Data/graphs.rda")
+# load("./Data/graphs.rda")
 
 # Convert graphs to networks
 union.net.1 <- asNetwork(union.gr.98)
@@ -51,10 +51,8 @@ for (i in 2:3) {
 
 # Create networkDynamic object
 # net.dyn <- networkDynamic(network.list= list(union.net.1, union.net.2, union.net.3, union.net.4, union.net.5, union.net.6), vertex.pid= "vertex.names")
-load("./Data/dynamic.network.rda")
-
-# Save
 # save(net.dyn, file= "./Data/dynamic.network.rda")
+load("./Data/dynamic.network.rda")
 
 # Check that networkDynamic() results are consistent with previous data.frame
 ## Dataframe of vertex activity

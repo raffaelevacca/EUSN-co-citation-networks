@@ -121,3 +121,15 @@ file.name <- file.order(i= counter, name= file.name, path= script.path)
 
 # Source script
 source(paste(script.path, file.name, sep=""))
+
+# Final static plots
+## -------------------------------------------------------------------------------------------------
+# File name
+file.name <- "final.static.plots.R"
+# Update counter
+counter <- counter + 1
+# Rename file according to counter
+file.name <- file.order(i= counter, name= file.name, path= script.path)
+
+# Source script
+source(paste(script.path, file.name, sep=""))

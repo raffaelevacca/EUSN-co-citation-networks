@@ -4,4 +4,5 @@ temp.*
 .Rapp.history
 notes.org
 /Figures/
-/animation/
+*.rda
+/Submission/

@@ -1,7 +1,7 @@
 # Load graphs
-load("./Data/graphs.rda")
+# load("./Data/graphs.rda")
 # Load static layout from dynamic network
-load("./Data/dyn.layout.rda")
+# load("./Data/dyn.layout.rda")
 
 # Relevant time period
 year <- "13"
@@ -42,10 +42,9 @@ labels <- sapply(V(gr)$name, function(x) paste(toupper(substr(x, 1, 1)), substri
 l.cex <- 0.5
 
 # Plot
-png.def(paste("./Figures/union.names.", year, ".final.png", sep=""))
+png.def(paste("./Figures/union.names.", year, ".final.png", sep=""), width= 2700, height= 2000, margins= c(0,0,0,2))
 plot.gr(gr, layout= layout, vertex.size=v.size, edge.width= width, edge.color= e.col, vert.col= v.col, vert.frame.col= NA, labels= labels, label.color=alpha.col("darkblue", 0.7), label.cex = l.cex, label.family= "sans")
 dev.off()
-
 
 # Plot with no names and different colors
 ## -------------------------------------------------------------------------------------------------
@@ -113,8 +112,5 @@ png.def(paste("./Figures/union.colors.", year, ".final.png", sep=""), width= 270
 plot.gr(gr, layout= layout, vertex.size=v.size, vert.col= V(gr)$color, vert.frame.col= V(gr)$frame.color, edge.width= E(gr)$width, edge.color= E(gr)$color)
 
 # Legend
-legend(0.9, 0.1, legend= c(expression(bold("Author cited in:")), "Social Sciences", "Computer Science/Physics", "Both"), pch= c(NA, 21, 21, 21), col= c(NA, v.f.col), pt.bg= c(NA, v.col), bty="n", cex= 1.5, pt.cex=2,  y.intersp= 1.5)
+legend(1, 0.1, legend= c(expression(bold("Author cited in:")), "Social Sciences", "Computer Science/Physics", "Both"), pch= c(NA, 21, 21, 21), col= c(NA, v.f.col), pt.bg= c(NA, v.col), bty="n", cex= 1.5, pt.cex=2,  y.intersp= 1.5)
 dev.off()
-
-#
-# x.intersp= 0.2, y.intersp= 0.3

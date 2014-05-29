@@ -2,7 +2,7 @@
 # to be converted to igraph.
 
 # Load functions
-source("./Script/01_functions.R")
+# source("./Script/01_functions.R")
 
 ## 2011-2013
 ## =================================================================================================
