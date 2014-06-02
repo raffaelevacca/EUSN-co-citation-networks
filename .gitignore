@@ -1,8 +1,7 @@
 temp.*
 .Rhistory
-*.png
+*.mov
 .Rapp.history
 notes.org
-/Figures/
 *.rda
 /Submission/
