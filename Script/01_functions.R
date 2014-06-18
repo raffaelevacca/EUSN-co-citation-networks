@@ -180,8 +180,7 @@ union.graph <- function(gr1, gr2, w.names= c("weight", "weight"), output.w.names
 # attribute in a graph. May aggregate the variable by node before returning.
 vert.attr <- function(data, attribute, graph, dataID, graphID= "name") {
   # This function extracts variables at the author level from 'data' and set them as 
-  # vertex.attributes in 'graph', a network of authors. The function aggregates the variable by
-  # author using the aggregating function FUN. The function needs a 'graph' igraph object of authors
+  # vertex.attributes in 'graph', a network of authors. The function needs a 'graph' igraph object of authors
   # in which the UFIDs are recorded as a  attribute, and a 'data' data.frame in which the
   # same UFIDs are associated to a variable (attribute).
   #
@@ -193,16 +192,6 @@ vert.attr <- function(data, attribute, graph, dataID, graphID= "name") {
   # -- graphID: (character) the vertex attribute of graph that gives node IDs (i.e. IDs of authors)
   # which are the same as dataID.
   # -- attribute: a variable name in 'data' (as character)
-  # -- FUN: a function name given as character. The argument is ignored if "data" has one record for 
-  # each dataID value, i.e. does not need aggregation by dataID. If NA or missing, attribute is
-  # aggregated by just taking its 1st non-NA value for each value of dataID.
-  #
-  # The function takes data and aggregates FUN(attribute) by dataID in 'data'. It returns the result 
-  # of the aggregation in the order of dataID given by V(graph)$name. 
-  # NOTE that if attribute is categorical (e.g. College), the argument FUN is ignored
-  # and vert.attr() is just going to take the category of the variable for authorID (if there are more 
-  # than 1 category, e.g. more than 1 Academic Units, for the same authorID, vert.attr just takes the 
-  # 1st category associated to authorID in 'data').
   #
   # Return value
   # A vector which contains the attribute 'attribute' from data, in the order given by the order of authorID in the graph 'graph'.
