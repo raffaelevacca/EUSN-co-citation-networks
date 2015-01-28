@@ -3,7 +3,7 @@ Social network and network science co-citations across disciplines in 1996-2013
 
 ## Intro
 - This is an R project to create co-citation networks for the field of social network analysis and network science using Web of Science (WOS) data.
-- The project was originally created for EUSN Visualization Award 2014.
+- The project was originally created for EUSN Visualization Award 2014. It [won the award](http://jornades.uab.cat/eusn/content/winners-eusn-2014-conference-awards-p-leifeld-r-vacca) in June 2014.
 - The project uses co-citation networks to map the research field of social networks and network science across different disciplines, namely the social sciences, physics, and computer science. Each node is a *cited* author and each tie is a co-citation between two authors. The *citing* papers are all the publications in the [Thomson Reuters Web of Science](http://thomsonreuters.com/thomson-reuters-web-of-science/) that mention "social networks" or "network science" in their topic. 
 - Using [WOS categories](http://images.webofknowledge.com/WOKRS56B5/help/WOS/hp_subject_category_terms_tasca.html), citing papers have been divided into two broad disciplines: the social sciences versus physics and computer science. 
 - Citing papers have been downloaded for the period from 1996 to 2013, and divided into six 3-years time spans according to their publication date. This has resulted into a time series of six co-citation networks. A network animation has been created to show the evolution of the co-citation network over these six time periods.
